@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LERMET AI — Create · Code · Elevate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    <style>
+        /* ----- reset & variables ----- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-deep: #060a14;
+            --bg-panel: #0e162b;
+            --bg-panel-2: #17213e;
+            --accent-cyan: #5eead4;
+            --accent-violet: #a78bfa;
+            --accent-amber: #fbbf24;
+            --accent-rose: #fb7185;
+            --text-primary: #edf2f9;
+            --text-muted: #8896b8;
+            --line: rgba(136, 150, 184, 0.14);
+            --radius: 14px;
+            --maxw: 1180px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.55;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        ::selection {
+            background: var(--accent-cyan);
+            color: #06121a;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        img,
+        svg {
+            display: block;
+            max-width: 100%;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--accent-cyan);
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
+
+        h1,
+        h2,
+        h3,
+        .font-display {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .mono {
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .eyebrow {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--accent-cyan);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6em;
+        }
+
+        .eyebrow::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-cyan);
+            box-shadow: 0 0 10px var(--accent-cyan);
+        }
+
+        .wrap {
+            max-width: var(--maxw);
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
+        /* ----- starfield ----- */
+        #starfield {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        /* ----- nav ----- */
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(6, 10, 20, 0.82);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .nav__inner {
+            max-width: var(--maxw);
+            margin: 0 auto;
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1.12rem;
+            letter-spacing: -0.01em;
+        }
+
+        .brand__logo {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-violet));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #06121a;
+            flex-shrink: 0;
+        }
+
+        .brand__logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        .brand__mark {
+            font-size: 0.58rem;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+            font-weight: 400;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .nav__links {
+            display: flex;
+            gap: 36px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .nav__links a {
+            transition: color 0.2s ease;
+        }
+
+        .nav__links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav__actions {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .nav__signin {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            transition: color 0.2s ease;
+        }
+
+        .nav__signin:hover {
+            color: var(--text-primary);
+        }
+
+        .nav__toggle {
+            display: none;
+            background: none;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            color: var(--text-primary);
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav__mobile {
+            display: none;
+            flex-direction: column;
+            gap: 22px;
+            padding: 28px 32px 36px;
+            background: var(--bg-deep);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .nav__mobile.is-open {
+            display: flex;
+        }
+
+        .nav__mobile a {
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+
+        /* ----- buttons ----- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 13px 28px;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+            white-space: nowrap;
+        }
+
+        .btn--primary {
+            background: linear-gradient(135deg, var(--accent-cyan), #3fc9ae);
+            color: #06121a;
+            box-shadow: 0 0 0 0 rgba(94, 234, 212, 0);
+        }
+
+        .btn--primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 32px -8px rgba(94, 234, 212, 0.5);
+        }
+
+        .btn--ghost {
+            background: transparent;
+            color: var(--text-primary);
+            border-color: var(--line);
+        }
+
+        .btn--ghost:hover {
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        .btn--block {
+            width: 100%;
+        }
+
+        /* ----- hero ----- */
+        .hero {
+            position: relative;
+            z-index: 1;
+            padding: 80px 0 48px;
+        }
+
+        .hero__inner {
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            gap: 48px;
+            align-items: center;
+        }
+
+        .hero__tagline {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.8rem;
+            letter-spacing: 0.15em;
+            color: var(--accent-amber);
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .hero__tagline span {
+            color: var(--text-muted);
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+        }
+
+        .hero__title {
+            font-size: clamp(2.8rem, 5.2vw, 4.4rem);
+            line-height: 1.04;
+            margin: 16px 0 20px;
+        }
+
+        .hero__title em {
+            font-style: normal;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-violet));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero__sub {
+            color: var(--text-muted);
+            font-size: 1.08rem;
+            max-width: 48ch;
+            margin-bottom: 32px;
+        }
+
+        .hero__ctas {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-bottom: 32px;
+        }
+
+        .hero__meta {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.76rem;
+            color: var(--text-muted);
+        }
+
+        .hero__meta span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hero__meta span:not(:last-child)::after {
+            content: '';
+            width: 1px;
+            height: 14px;
+            background: var(--line);
+            margin-left: 24px;
+        }
+
+        .hero__visual {
+            position: relative;
+            aspect-ratio: 1/1;
+            border-radius: 24px;
+            background: radial-gradient(circle at 30% 20%, rgba(167, 139, 250, 0.10), transparent 55%),
+                radial-gradient(circle at 70% 75%, rgba(94, 234, 212, 0.10), transparent 55%),
+                var(--bg-panel);
+            border: 1px solid var(--line);
+            overflow: hidden;
+        }
+
+        #constellation {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* ----- section shell ----- */
+        .section {
+            position: relative;
+            z-index: 1;
+            padding: 88px 0;
+        }
+
+        .section--alt {
+            background: linear-gradient(180deg, transparent, rgba(14, 22, 43, 0.5) 12%, rgba(14, 22, 43, 0.5) 88%, transparent);
+        }
+
+        .section__head {
+            max-width: 640px;
+            margin-bottom: 52px;
+        }
+
+        .section__title {
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            margin-top: 14px;
+        }
+
+        .section__sub {
+            color: var(--text-muted);
+            margin-top: 14px;
+            font-size: 1.02rem;
+        }
+
+        /* ----- features ----- */
+        .features {
+            position: relative;
+        }
+
+        .feature-grid {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 18px;
+        }
+
+        .feature-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 26px 20px;
+            transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--accent-cyan);
+            background: var(--bg-panel-2);
+        }
+
+        .feature-card__node {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 18px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.72rem;
+            border: 1px solid var(--line);
+            color: var(--accent-cyan);
+            box-shadow: 0 0 14px -2px rgba(94, 234, 212, 0.3);
+        }
+
+        .feature-card__title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 1.02rem;
+            margin-bottom: 10px;
+        }
+
+        .feature-card__text {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+        }
+
+        .feature-card--center {
+            background: linear-gradient(160deg, rgba(94, 234, 212, 0.10), rgba(14, 22, 43, 0.5));
+            border-color: rgba(94, 234, 212, 0.3);
+        }
+
+        /* ----- steps ----- */
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+            position: relative;
+        }
+
+        .steps::before {
+            content: '';
+            position: absolute;
+            top: 18px;
+            left: 4%;
+            right: 4%;
+            height: 1px;
+            background: repeating-linear-gradient(90deg, var(--line) 0 8px, transparent 8px 16px);
+        }
+
+        .step {
+            position: relative;
+            padding-right: 20px;
+        }
+
+        .step__index {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--accent-amber);
+            background: var(--bg-deep);
+            display: inline-block;
+            padding-right: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step__title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.12rem;
+            font-weight: 600;
+            margin: 14px 0 10px;
+        }
+
+        .step__text {
+            color: var(--text-muted);
+            font-size: 0.92rem;
+        }
+
+        /* ----- stats ----- */
+        .stats-panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            padding: 48px 40px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 32px;
+        }
+
+        .stat {
+            border-left: 1px solid var(--line);
+            padding-left: 22px;
+        }
+
+        .stat__value {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 2.1rem;
+            color: var(--accent-cyan);
+            font-weight: 500;
+        }
+
+        .stat__label {
+            color: var(--text-muted);
+            font-size: 0.84rem;
+            margin-top: 8px;
+        }
+
+        /* ----- testimonials ----- */
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .testimonial-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 28px 24px;
+        }
+
+        .testimonial-card__quote {
+            font-size: 0.98rem;
+            margin-bottom: 22px;
+        }
+
+        .testimonial-card__who {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.76rem;
+            color: var(--accent-violet);
+        }
+
+        /* ----- pricing ----- */
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            align-items: stretch;
+        }
+
+        .price-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 32px 28px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .price-card--featured {
+            border-color: var(--accent-cyan);
+            background: linear-gradient(160deg, rgba(94, 234, 212, 0.08), var(--bg-panel));
+            position: relative;
+        }
+
+        .price-card--featured::before {
+            content: 'POPULAR';
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.12em;
+            color: #06121a;
+            background: var(--accent-cyan);
+            padding: 5px 12px;
+            border-radius: 6px;
+            position: absolute;
+            top: -12px;
+            left: 28px;
+        }
+
+        .price-card__tier {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .price-card__amount {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin: 12px 0 4px;
+        }
+
+        .price-card__amount span {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .price-card__list {
+            margin: 22px 0 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            flex: 1;
+        }
+
+        .price-card__list li {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .price-card__list li::before {
+            content: '+';
+            color: var(--accent-cyan);
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        /* ----- footer cta ----- */
+        .footer-cta {
+            position: relative;
+            border-radius: 24px;
+            border: 1px solid var(--line);
+            background: radial-gradient(circle at 50% 0%, rgba(167, 139, 250, 0.12), transparent 60%), var(--bg-panel);
+            padding: 72px 40px;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .footer-cta__title {
+            font-size: clamp(1.8rem, 3.4vw, 2.7rem);
+            margin-bottom: 18px;
+        }
+
+        .footer-cta__sub {
+            color: var(--text-muted);
+            max-width: 46ch;
+            margin: 0 auto 32px;
+        }
+
+        /* ----- footer ----- */
+        footer {
+            position: relative;
+            z-index: 1;
+            padding: 48px 0 64px;
+            border-top: 1px solid var(--line);
+            margin-top: 40px;
+        }
+
+        .footer__row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 18px;
+        }
+
+        .footer__links {
+            display: flex;
+            gap: 28px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .footer__links a:hover {
+            color: var(--text-primary);
+        }
+
+        .footer__copy {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.76rem;
+            color: var(--text-muted);
+        }
+
+        /* ----- responsive ----- */
+        @media (max-width: 980px) {
+            .hero__inner {
+                grid-template-columns: 1fr;
+            }
+            .hero__visual {
+                max-width: 480px;
+                margin: 0 auto;
+            }
+            .feature-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .feature-card--center {
+                grid-column: span 2;
+            }
+            .steps {
+                grid-template-columns: repeat(2, 1fr);
+                row-gap: 36px;
+            }
+            .steps::before {
+                display: none;
+            }
+            .stats-panel {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .testimonial-grid {
+                grid-template-columns: 1fr;
+            }
+            .price-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .nav__links,
+            .nav__signin {
+                display: none;
+            }
+            .nav__toggle {
+                display: flex;
+            }
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            .feature-card--center {
+                grid-column: span 1;
+            }
+            .stats-panel {
+                grid-template-columns: 1fr 1fr;
+                padding: 32px 24px;
+            }
+            .stat {
+                padding-left: 14px;
+            }
+            .wrap {
+                padding: 0 20px;
+            }
+            .hero__meta span:not(:last-child)::after {
+                margin-left: 12px;
+            }
+            .hero__meta {
+                gap: 12px;
+            }
+            .footer__row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+            * {
+                animation-duration: 0.001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.001ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- starfield background -->
+    <canvas id="starfield"></canvas>
+
+    <!-- navigation -->
+    <nav class="nav">
+        <div class="nav__inner">
+            <a href="#top" class="brand">
+                <span class="brand__logo">
+                    <!-- replace src with your actual logo path -->
+                    <img src="IMG_20260624_225012_873_647641145267211194.webp" alt="LERMET AI logo" />
+                </span>
+                LERMET AI
+                <span class="brand__mark">· create · code · elevate</span>
+            </a>
+            <ul class="nav__links">
+                <li><a href="#features">Platform</a></li>
+                <li><a href="#features">AI Studio</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="#">Docs</a></li>
+            </ul>
+            <div class="nav__actions">
+                <a href="#" class="nav__signin">Sign in</a>
+                <a href="#pricing" class="btn btn--primary">Get started</a>
+            </div>
+            <button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+                <svg width="18" height="14" viewBox="0 0 18 14" fill="none">
+                    <path d="M0 1H18M0 7H18M0 13H18" stroke="currentColor" stroke-width="1.6" />
+                </svg>
+            </button>
+        </div>
+        <div class="nav__mobile" id="navMobile">
+            <a href="#features">Platform</a>
+            <a href="#features">AI Studio</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#">Docs</a>
+            <a href="#" class="nav__signin">Sign in</a>
+            <a href="#pricing" class="btn btn--primary btn--block">Get started</a>
+        </div>
+    </nav>
+
+    <main id="top">
+
+        <!-- hero -->
+        <section class="hero">
+            <div class="wrap hero__inner">
+                <div>
+                    <div class="hero__tagline">
+                        LERMET AI
+                        <span>·</span>
+                        <span>create · code · elevate</span>
+                    </div>
+                    <h1 class="hero__title">
+                        Build, learn,<br /><em>elevate with AI.</em>
+                    </h1>
+                    <p class="hero__sub">
+                        LERMET AI is your creative and coding companion — from prototyping ideas to
+                        mastering new skills, all in one intelligent workspace.
+                    </p>
+                    <div class="hero__ctas">
+                        <a href="#pricing" class="btn btn--primary">Start building free</a>
+                        <a href="#features" class="btn btn--ghost">Explore the studio →</a>
+                    </div>
+                    <div class="hero__meta">
+                        <span class="mono">AI-powered</span>
+                        <span class="mono">Code · Create · Learn</span>
+                        <span class="mono">No card required</span>
+                    </div>
+                </div>
+                <div class="hero__visual">
+                    <canvas id="constellation"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- features -->
+        <section class="section features" id="features">
+            <div class="wrap">
+                <div class="section__head">
+                    <span class="eyebrow">The ecosystem</span>
+                    <h2 class="section__title">Three pillars. One connected mind.</h2>
+                    <p class="section__sub">
+                        LERMET AI weaves creation, coding, and learning into a single intelligent
+                        fabric — so your ideas flow without friction.
+                    </p>
+                </div>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-card__node mono">01</div>
+                        <div class="feature-card__title">AI Creation Studio</div>
+                        <p class="feature-card__text">
+                            Generate, refine, and remix creative work — from writing to design —
+                            with real-time AI assistance.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-card__node mono">02</div>
+                        <div class="feature-card__title">Code Intelligence</div>
+                        <p class="feature-card__text">
+                            Write, debug, and understand code faster. AI that speaks your
+                            language and your stack.
+                        </p>
+                    </div>
+                    <div class="feature-card feature-card--center">
+                        <div class="feature-card__node mono">AI</div>
+                        <div class="feature-card__title">Adaptive Learning</div>
+                        <p class="feature-card__text">
+                            Learn anything — from Python to poetry. LERMET adapts to your
+                            pace, style, and goals.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-card__node mono">03</div>
+                        <div class="feature-card__title">Collaborative Flow</div>
+                        <p class="feature-card__text">
+                            Share workspaces, sync progress, and build together — whether
+                            you're a team of two or twenty.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-card__node mono">04</div>
+                        <div class="feature-card__title">Insight Dashboard</div>
+                        <p class="feature-card__text">
+                            See your creative and coding growth over time. What you've made,
+                            what you've learned, what's next.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- how it works -->
+        <section class="section section--alt">
+            <div class="wrap">
+                <div class="section__head">
+                    <span class="eyebrow">The flow</span>
+                    <h2 class="section__title">From idea to impact, in four moves.</h2>
+                </div>
+                <div class="steps">
+                    <div class="step">
+                        <span class="step__index">01</span>
+                        <h3 class="step__title">Ideate</h3>
+                        <p class="step__text">
+                            Start with a prompt, a sketch, or a question. LERMET listens,
+                            interprets, and meets you there.
+                        </p>
+                    </div>
+                    <div class="step">
+                        <span class="step__index">02</span>
+                        <h3 class="step__title">Create</h3>
+                        <p class="step__text">
+                            Generate code, content, or concepts. Refine with AI that
+                            understands context and intent.
+                        </p>
+                    </div>
+                    <div class="step">
+                        <span class="step__index">03</span>
+                        <h3 class="step__title">Learn</h3>
+                        <p class="step__text">
+                            Every creation becomes a lesson. LERMET surfaces insights,
+                            alternatives, and deeper knowledge.
+                        </p>
+                    </div>
+                    <div class="step">
+                        <span class="step__index">04</span>
+                        <h3 class="step__title">Elevate</h3>
+                        <p class="step__text">
+                            Share, deploy, or revisit. Your work and learning persist,
+                            evolve, and compound over time.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- stats -->
+        <section class="section">
+            <div class="wrap">
+                <div class="stats-panel">
+                    <div class="stat">
+                        <div class="stat__value"><span class="stat-num" data-target="12.8" data-decimals="1">0</span>k+</div>
+                        <div class="stat__label">Active creators &amp; coders</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat__value"><span class="stat-num" data-target="89" data-decimals="0">0</span>%</div>
+                        <div class="stat__label">Report faster project delivery</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat__value"><span class="stat-num" data-target="6" data-decimals="0">0</span>+</div>
+                        <div class="stat__label">Languages &amp; creative domains</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat__value">24 / 7</div>
+                        <div class="stat__label">AI assistant always on</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- testimonials -->
+        <section class="section section--alt">
+            <div class="wrap">
+                <div class="section__head">
+                    <span class="eyebrow">From the community</span>
+                    <h2 class="section__title">Built for builders, by builders.</h2>
+                </div>
+                <div class="testimonial-grid">
+                    <div class="testimonial-card">
+                        <p class="testimonial-card__quote">
+                            "LERMET turned my rough prototype into a working app in two days.
+                            The AI understood what I meant, not just what I typed."
+                        </p>
+                        <div class="testimonial-card__who">ALEX, 29 — INDIE MAKER</div>
+                    </div>
+                    <div class="testimonial-card">
+                        <p class="testimonial-card__quote">
+                            "I used it to learn React while building my portfolio. Every
+                            mistake became a lesson, every lesson became a feature."
+                        </p>
+                        <div class="testimonial-card__who">JORDAN, 22 — BOOTCAMP GRAD</div>
+                    </div>
+                    <div class="testimonial-card">
+                        <p class="testimonial-card__quote">
+                            "We moved our entire content workflow into LERMET. It's like having
+                            a creative director and a dev lead in one interface."
+                        </p>
+                        <div class="testimonial-card__who">SAMIRA, 41 — STUDIO LEAD</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- pricing -->
+        <section class="section" id="pricing">
+            <div class="wrap">
+                <div class="section__head">
+                    <span class="eyebrow">Pricing</span>
+                    <h2 class="section__title">Start free. Scale when you need it.</h2>
+                </div>
+                <div class="price-grid">
+                    <div class="price-card">
+                        <span class="price-card__tier mono">FOUNDER</span>
+                        <div class="price-card__amount">$0<span>/month</span></div>
+                        <ul class="price-card__list">
+                            <li>Unlimited AI prompts</li>
+                            <li>50 code generations / month</li>
+                            <li>Single workspace</li>
+                            <li>Basic insights</li>
+                        </ul>
+                        <a href="#" class="btn btn--ghost btn--block">Start building</a>
+                    </div>
+                    <div class="price-card price-card--featured">
+                        <span class="price-card__tier mono">PRO</span>
+                        <div class="price-card__amount">$12<span>/month</span></div>
+                        <ul class="price-card__list">
+                            <li>Everything in Founder, unlimited</li>
+                            <li>Unlimited code &amp; creative generations</li>
+                            <li>Multi-workspace collaboration</li>
+                            <li>Advanced insights &amp; version history</li>
+                        </ul>
+                        <a href="#" class="btn btn--primary btn--block">Start free trial</a>
+                    </div>
+                    <div class="price-card">
+                        <span class="price-card__tier mono">TEAM</span>
+                        <div class="price-card__amount">$29<span>/month</span></div>
+                        <ul class="price-card__list">
+                            <li>Everything in Pro</li>
+                            <li>Up to 10 seats</li>
+                            <li>Shared workspace &amp; templates</li>
+                            <li>Priority AI response</li>
+                        </ul>
+                        <a href="#" class="btn btn--ghost btn--block">Contact sales</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- footer cta -->
+        <section class="section">
+            <div class="wrap">
+                <div class="footer-cta">
+                    <span class="eyebrow">Ready to create</span>
+                    <h2 class="footer-cta__title">Start your first project today.</h2>
+                    <p class="footer-cta__sub">
+                        No card needed. Bring an idea, and let LERMET AI help you build,
+                        code, and elevate it.
+                    </p>
+                    <a href="#" class="btn btn--primary">Start free — no card</a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="wrap footer__row">
+            <span class="footer__copy">© 2026 LERMET AI — create · code · elevate.</span>
+            <div class="footer__links">
+                <a href="#features">Product</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#">Company</a>
+                <a href="#">Legal</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ----- mobile nav -----
+        const navToggle = document.getElementById('navToggle');
+        const navMobile = document.getElementById('navMobile');
+        navToggle.addEventListener('click', () => {
+            const open = navMobile.classList.toggle('is-open');
+            navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        navMobile.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+            navMobile.classList.remove('is-open');
+            navToggle.setAttribute('aria-expanded', 'false');
+        }));
+
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // ----- starfield background -----
+        (function starfield() {
+            const canvas = document.getElementById('starfield');
+            const ctx = canvas.getContext('2d');
+            let stars = [];
+
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = document.body.scrollHeight;
+                const count = Math.floor((canvas.width * canvas.height) / 9000);
+                stars = Array.from({ length: count }, () => ({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    r: Math.random() * 1.1 + 0.2,
+                    a: Math.random() * 0.6 + 0.1,
+                    tw: Math.random() * 0.015 + 0.003,
+                    dir: Math.random() > 0.5 ? 1 : -1
+                }));
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#edf2f9';
+                stars.forEach(s => {
+                    if (!reduceMotion) {
+                        s.a += s.tw * s.dir;
+                        if (s.a > 0.7 || s.a < 0.1) s.dir *= -1;
+                    }
+                    ctx.globalAlpha = s.a;
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+                ctx.globalAlpha = 1;
+                if (!reduceMotion) requestAnimationFrame(draw);
+            }
+
+            window.addEventListener('resize', resize);
+            resize();
+            draw();
+        })();
+
+        // ----- hero constellation -----
+        (function constellation() {
+            const canvas = document.getElementById('constellation');
+            const ctx = canvas.getContext('2d');
+            const container = canvas.parentElement;
+            let w, h, nodes;
+            const labels = ['Create', 'Code', 'Learn', 'Build', 'Design', 'Deploy', 'Iterate', 'Elevate'];
+            const colors = ['#5eead4', '#a78bfa', '#fbbf24', '#fb7185', '#5eead4', '#a78bfa', '#fbbf24', '#fb7185'];
+
+            function size() {
+                w = canvas.width = container.clientWidth;
+                h = canvas.height = container.clientHeight;
+                const cx = w / 2,
+                    cy = h / 2;
+                nodes = [{ x: cx, y: cy, vx: 0, vy: 0, r: 7, label: 'LERMET', center: true, color: '#edf2f9' }];
+                labels.forEach((label, i) => {
+                    const angle = (i / labels.length) * Math.PI * 2 + 0.3;
+                    const dist = Math.min(w, h) * (0.30 + (i % 3) * 0.05);
+                    nodes.push({
+                        x: cx + Math.cos(angle) * dist,
+                        y: cy + Math.sin(angle) * dist,
+                        vx: (Math.random() - 0.5) * 0.12,
+                        vy: (Math.random() - 0.5) * 0.12,
+                        r: 3.4,
+                        label,
+                        color: colors[i % colors.length]
+                    });
+                });
+            }
+
+            function step() {
+                ctx.clearRect(0, 0, w, h);
+
+                // connections from center
+                nodes.forEach((n, i) => {
+                    if (i === 0) return;
+                    const center = nodes[0];
+                    ctx.beginPath();
+                    ctx.moveTo(center.x, center.y);
+                    ctx.lineTo(n.x, n.y);
+                    ctx.strokeStyle = 'rgba(136,150,184,0.25)';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                });
+
+                // cross-links
+                for (let i = 1; i < nodes.length; i++) {
+                    const a = nodes[i],
+                        b = nodes[(i % (nodes.length - 1)) + 1];
+                    ctx.beginPath();
+                    ctx.moveTo(a.x, a.y);
+                    ctx.lineTo(b.x, b.y);
+                    ctx.strokeStyle = 'rgba(136,150,184,0.08)';
+                    ctx.stroke();
+                }
+
+                nodes.forEach((n, i) => {
+                    if (!reduceMotion && i > 0) {
+                        n.x += n.vx;
+                        n.y += n.vy;
+                        if (n.x < w * 0.08 || n.x > w * 0.92) n.vx *= -1;
+                        if (n.y < h * 0.08 || n.y > h * 0.92) n.vy *= -1;
+                    }
+                    ctx.beginPath();
+                    ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+                    ctx.fillStyle = n.color;
+                    ctx.shadowColor = n.color;
+                    ctx.shadowBlur = n.center ? 18 : 10;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+
+                    ctx.font = n.center ? '600 14px Space Grotesk, sans-serif' : '10px IBM Plex Mono, monospace';
+                    ctx.fillStyle = n.center ? '#edf2f9' : 'rgba(237,242,249,0.7)';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(n.label, n.x, n.y - n.r - 8);
+                });
+
+                if (!reduceMotion) requestAnimationFrame(step);
+            }
+
+            window.addEventListener('resize', size);
+            size();
+            step();
+        })();
+
+        // ----- count-up stats -----
+        (function countUp() {
+            const els = document.querySelectorAll('.stat-num');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    const el = entry.target;
+                    const target = parseFloat(el.dataset.target);
+                    const decimals = parseInt(el.dataset.decimals || '0', 10);
+                    if (reduceMotion) {
+                        el.textContent = target.toFixed(decimals);
+                        observer.unobserve(el);
+                        return;
+                    }
+                    const duration = 1100;
+                    const start = performance.now();
+
+                    function frame(now) {
+                        const t = Math.min(1, (now - start) / duration);
+                        const eased = 1 - Math.pow(1 - t, 3);
+                        el.textContent = (target * eased).toFixed(decimals);
+                        if (t < 1) requestAnimationFrame(frame);
+                    }
+                    requestAnimationFrame(frame);
+                    observer.unobserve(el);
+                });
+            }, { threshold: 0.4 });
+            els.forEach(el => observer.observe(el));
+        })();
+    </script>
+
+</body>
+  </html>
