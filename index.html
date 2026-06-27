@@ -1,1265 +1,540 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LERMET AI — Create · Code · Elevate</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-    <style>
-        /* ----- reset & variables ----- */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        :root {
-            --bg-deep: #060a14;
-            --bg-panel: #0e162b;
-            --bg-panel-2: #17213e;
-            --accent-cyan: #5eead4;
-            --accent-violet: #a78bfa;
-            --accent-amber: #fbbf24;
-            --accent-rose: #fb7185;
-            --text-primary: #edf2f9;
-            --text-muted: #8896b8;
-            --line: rgba(136, 150, 184, 0.14);
-            --radius: 14px;
-            --maxw: 1180px;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background: var(--bg-deep);
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-            line-height: 1.55;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        ::selection {
-            background: var(--accent-cyan);
-            color: #06121a;
-        }
-
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
-
-        img,
-        svg {
-            display: block;
-            max-width: 100%;
-        }
-
-        ul {
-            list-style: none;
-        }
-
-        :focus-visible {
-            outline: 2px solid var(--accent-cyan);
-            outline-offset: 3px;
-            border-radius: 4px;
-        }
-
-        h1,
-        h2,
-        h3,
-        .font-display {
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 600;
-            letter-spacing: -0.01em;
-        }
-
-        .mono {
-            font-family: 'IBM Plex Mono', monospace;
-        }
-
-        .eyebrow {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.7rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: var(--accent-cyan);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.6em;
-        }
-
-        .eyebrow::before {
-            content: '';
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--accent-cyan);
-            box-shadow: 0 0 10px var(--accent-cyan);
-        }
-
-        .wrap {
-            max-width: var(--maxw);
-            margin: 0 auto;
-            padding: 0 32px;
-        }
-
-        /* ----- starfield ----- */
-        #starfield {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            opacity: 0.5;
-        }
-
-        /* ----- nav ----- */
-        .nav {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            background: rgba(6, 10, 20, 0.82);
-            backdrop-filter: blur(14px);
-            border-bottom: 1px solid var(--line);
-        }
-
-        .nav__inner {
-            max-width: var(--maxw);
-            margin: 0 auto;
-            padding: 16px 32px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
-            font-size: 1.12rem;
-            letter-spacing: -0.01em;
-        }
-
-        .brand__logo {
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-violet));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
-            font-size: 0.9rem;
-            color: #06121a;
-            flex-shrink: 0;
-        }
-
-        .brand__logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            border-radius: 10px;
-        }
-
-        .brand__mark {
-            font-size: 0.58rem;
-            letter-spacing: 0.06em;
-            color: var(--text-muted);
-            font-weight: 400;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .nav__links {
-            display: flex;
-            gap: 36px;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-
-        .nav__links a {
-            transition: color 0.2s ease;
-        }
-
-        .nav__links a:hover {
-            color: var(--text-primary);
-        }
-
-        .nav__actions {
-            display: flex;
-            align-items: center;
-            gap: 18px;
-        }
-
-        .nav__signin {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            transition: color 0.2s ease;
-        }
-
-        .nav__signin:hover {
-            color: var(--text-primary);
-        }
-
-        .nav__toggle {
-            display: none;
-            background: none;
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            width: 40px;
-            height: 40px;
-            color: var(--text-primary);
-            cursor: pointer;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .nav__mobile {
-            display: none;
-            flex-direction: column;
-            gap: 22px;
-            padding: 28px 32px 36px;
-            background: var(--bg-deep);
-            border-bottom: 1px solid var(--line);
-        }
-
-        .nav__mobile.is-open {
-            display: flex;
-        }
-
-        .nav__mobile a {
-            font-size: 1rem;
-            color: var(--text-muted);
-        }
-
-        /* ----- buttons ----- */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 13px 28px;
-            border-radius: 999px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            border: 1px solid transparent;
-            transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease;
-            white-space: nowrap;
-        }
-
-        .btn--primary {
-            background: linear-gradient(135deg, var(--accent-cyan), #3fc9ae);
-            color: #06121a;
-            box-shadow: 0 0 0 0 rgba(94, 234, 212, 0);
-        }
-
-        .btn--primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 8px 32px -8px rgba(94, 234, 212, 0.5);
-        }
-
-        .btn--ghost {
-            background: transparent;
-            color: var(--text-primary);
-            border-color: var(--line);
-        }
-
-        .btn--ghost:hover {
-            border-color: var(--accent-cyan);
-            color: var(--accent-cyan);
-        }
-
-        .btn--block {
-            width: 100%;
-        }
-
-        /* ----- hero ----- */
-        .hero {
-            position: relative;
-            z-index: 1;
-            padding: 80px 0 48px;
-        }
-
-        .hero__inner {
-            display: grid;
-            grid-template-columns: 1.05fr 0.95fr;
-            gap: 48px;
-            align-items: center;
-        }
-
-        .hero__tagline {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.8rem;
-            letter-spacing: 0.15em;
-            color: var(--accent-amber);
-            text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .hero__tagline span {
-            color: var(--text-muted);
-            font-size: 0.65rem;
-            letter-spacing: 0.1em;
-        }
-
-        .hero__title {
-            font-size: clamp(2.8rem, 5.2vw, 4.4rem);
-            line-height: 1.04;
-            margin: 16px 0 20px;
-        }
-
-        .hero__title em {
-            font-style: normal;
-            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-violet));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .hero__sub {
-            color: var(--text-muted);
-            font-size: 1.08rem;
-            max-width: 48ch;
-            margin-bottom: 32px;
-        }
-
-        .hero__ctas {
-            display: flex;
-            gap: 14px;
-            flex-wrap: wrap;
-            margin-bottom: 32px;
-        }
-
-        .hero__meta {
-            display: flex;
-            gap: 24px;
-            flex-wrap: wrap;
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.76rem;
-            color: var(--text-muted);
-        }
-
-        .hero__meta span {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .hero__meta span:not(:last-child)::after {
-            content: '';
-            width: 1px;
-            height: 14px;
-            background: var(--line);
-            margin-left: 24px;
-        }
-
-        .hero__visual {
-            position: relative;
-            aspect-ratio: 1/1;
-            border-radius: 24px;
-            background: radial-gradient(circle at 30% 20%, rgba(167, 139, 250, 0.10), transparent 55%),
-                radial-gradient(circle at 70% 75%, rgba(94, 234, 212, 0.10), transparent 55%),
-                var(--bg-panel);
-            border: 1px solid var(--line);
-            overflow: hidden;
-        }
-
-        #constellation {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
-        /* ----- section shell ----- */
-        .section {
-            position: relative;
-            z-index: 1;
-            padding: 88px 0;
-        }
-
-        .section--alt {
-            background: linear-gradient(180deg, transparent, rgba(14, 22, 43, 0.5) 12%, rgba(14, 22, 43, 0.5) 88%, transparent);
-        }
-
-        .section__head {
-            max-width: 640px;
-            margin-bottom: 52px;
-        }
-
-        .section__title {
-            font-size: clamp(1.8rem, 3vw, 2.5rem);
-            margin-top: 14px;
-        }
-
-        .section__sub {
-            color: var(--text-muted);
-            margin-top: 14px;
-            font-size: 1.02rem;
-        }
-
-        /* ----- features ----- */
-        .features {
-            position: relative;
-        }
-
-        .feature-grid {
-            position: relative;
-            z-index: 1;
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 18px;
-        }
-
-        .feature-card {
-            background: var(--bg-panel);
-            border: 1px solid var(--line);
-            border-radius: var(--radius);
-            padding: 26px 20px;
-            transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-6px);
-            border-color: var(--accent-cyan);
-            background: var(--bg-panel-2);
-        }
-
-        .feature-card__node {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 18px;
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.72rem;
-            border: 1px solid var(--line);
-            color: var(--accent-cyan);
-            box-shadow: 0 0 14px -2px rgba(94, 234, 212, 0.3);
-        }
-
-        .feature-card__title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 600;
-            font-size: 1.02rem;
-            margin-bottom: 10px;
-        }
-
-        .feature-card__text {
-            color: var(--text-muted);
-            font-size: 0.88rem;
-        }
-
-        .feature-card--center {
-            background: linear-gradient(160deg, rgba(94, 234, 212, 0.10), rgba(14, 22, 43, 0.5));
-            border-color: rgba(94, 234, 212, 0.3);
-        }
-
-        /* ----- steps ----- */
-        .steps {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 0;
-            position: relative;
-        }
-
-        .steps::before {
-            content: '';
-            position: absolute;
-            top: 18px;
-            left: 4%;
-            right: 4%;
-            height: 1px;
-            background: repeating-linear-gradient(90deg, var(--line) 0 8px, transparent 8px 16px);
-        }
-
-        .step {
-            position: relative;
-            padding-right: 20px;
-        }
-
-        .step__index {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.8rem;
-            color: var(--accent-amber);
-            background: var(--bg-deep);
-            display: inline-block;
-            padding-right: 10px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .step__title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.12rem;
-            font-weight: 600;
-            margin: 14px 0 10px;
-        }
-
-        .step__text {
-            color: var(--text-muted);
-            font-size: 0.92rem;
-        }
-
-        /* ----- stats ----- */
-        .stats-panel {
-            background: var(--bg-panel);
-            border: 1px solid var(--line);
-            border-radius: 20px;
-            padding: 48px 40px;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 32px;
-        }
-
-        .stat {
-            border-left: 1px solid var(--line);
-            padding-left: 22px;
-        }
-
-        .stat__value {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 2.1rem;
-            color: var(--accent-cyan);
-            font-weight: 500;
-        }
-
-        .stat__label {
-            color: var(--text-muted);
-            font-size: 0.84rem;
-            margin-top: 8px;
-        }
-
-        /* ----- testimonials ----- */
-        .testimonial-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-
-        .testimonial-card {
-            background: var(--bg-panel);
-            border: 1px solid var(--line);
-            border-radius: var(--radius);
-            padding: 28px 24px;
-        }
-
-        .testimonial-card__quote {
-            font-size: 0.98rem;
-            margin-bottom: 22px;
-        }
-
-        .testimonial-card__who {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.76rem;
-            color: var(--accent-violet);
-        }
-
-        /* ----- pricing ----- */
-        .price-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            align-items: stretch;
-        }
-
-        .price-card {
-            background: var(--bg-panel);
-            border: 1px solid var(--line);
-            border-radius: var(--radius);
-            padding: 32px 28px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .price-card--featured {
-            border-color: var(--accent-cyan);
-            background: linear-gradient(160deg, rgba(94, 234, 212, 0.08), var(--bg-panel));
-            position: relative;
-        }
-
-        .price-card--featured::before {
-            content: 'POPULAR';
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.6rem;
-            letter-spacing: 0.12em;
-            color: #06121a;
-            background: var(--accent-cyan);
-            padding: 5px 12px;
-            border-radius: 6px;
-            position: absolute;
-            top: -12px;
-            left: 28px;
-        }
-
-        .price-card__tier {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        .price-card__amount {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 2.2rem;
-            font-weight: 600;
-            margin: 12px 0 4px;
-        }
-
-        .price-card__amount span {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            font-weight: 400;
-        }
-
-        .price-card__list {
-            margin: 22px 0 28px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            color: var(--text-muted);
-            font-size: 0.88rem;
-            flex: 1;
-        }
-
-        .price-card__list li {
-            display: flex;
-            gap: 10px;
-            align-items: flex-start;
-        }
-
-        .price-card__list li::before {
-            content: '+';
-            color: var(--accent-cyan);
-            font-family: 'IBM Plex Mono', monospace;
-        }
-
-        /* ----- footer cta ----- */
-        .footer-cta {
-            position: relative;
-            border-radius: 24px;
-            border: 1px solid var(--line);
-            background: radial-gradient(circle at 50% 0%, rgba(167, 139, 250, 0.12), transparent 60%), var(--bg-panel);
-            padding: 72px 40px;
-            text-align: center;
-            overflow: hidden;
-        }
-
-        .footer-cta__title {
-            font-size: clamp(1.8rem, 3.4vw, 2.7rem);
-            margin-bottom: 18px;
-        }
-
-        .footer-cta__sub {
-            color: var(--text-muted);
-            max-width: 46ch;
-            margin: 0 auto 32px;
-        }
-
-        /* ----- footer ----- */
-        footer {
-            position: relative;
-            z-index: 1;
-            padding: 48px 0 64px;
-            border-top: 1px solid var(--line);
-            margin-top: 40px;
-        }
-
-        .footer__row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 18px;
-        }
-
-        .footer__links {
-            display: flex;
-            gap: 28px;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        .footer__links a:hover {
-            color: var(--text-primary);
-        }
-
-        .footer__copy {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.76rem;
-            color: var(--text-muted);
-        }
-
-        /* ----- responsive ----- */
-        @media (max-width: 980px) {
-            .hero__inner {
-                grid-template-columns: 1fr;
-            }
-            .hero__visual {
-                max-width: 480px;
-                margin: 0 auto;
-            }
-            .feature-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .feature-card--center {
-                grid-column: span 2;
-            }
-            .steps {
-                grid-template-columns: repeat(2, 1fr);
-                row-gap: 36px;
-            }
-            .steps::before {
-                display: none;
-            }
-            .stats-panel {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .testimonial-grid {
-                grid-template-columns: 1fr;
-            }
-            .price-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 760px) {
-            .nav__links,
-            .nav__signin {
-                display: none;
-            }
-            .nav__toggle {
-                display: flex;
-            }
-            .feature-grid {
-                grid-template-columns: 1fr;
-            }
-            .feature-card--center {
-                grid-column: span 1;
-            }
-            .stats-panel {
-                grid-template-columns: 1fr 1fr;
-                padding: 32px 24px;
-            }
-            .stat {
-                padding-left: 14px;
-            }
-            .wrap {
-                padding: 0 20px;
-            }
-            .hero__meta span:not(:last-child)::after {
-                margin-left: 12px;
-            }
-            .hero__meta {
-                gap: 12px;
-            }
-            .footer__row {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            html {
-                scroll-behavior: auto;
-            }
-            * {
-                animation-duration: 0.001ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.001ms !important;
-            }
-        }
-    </style>
+  <!-- ============================================================
+       SPIDER-MAN LOGIN PAGE
+       Marvel-Inspired Premium Authentication Interface
+       Built with HTML5 · CSS3 · Vanilla JavaScript
+  ============================================================ -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Spider-Man inspired secure login portal — Marvel Web Authentication" />
+  <meta name="theme-color" content="#0a0a0f" />
+  <title>Web-Slinger Auth · Marvel Portal</title>
+
+  <!-- Preconnect for performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- Premium Typography -->
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/animations.css" />
 </head>
+
 <body>
+  <!-- ============================================================
+       SKIP NAVIGATION — Accessibility
+  ============================================================ -->
+  <a href="#login-form" class="skip-link">Skip to login form</a>
 
-    <!-- starfield background -->
-    <canvas id="starfield"></canvas>
+  <!-- ============================================================
+       CANVAS LAYERS — Particles + Web Effects
+  ============================================================ -->
+  <canvas id="particles-canvas" aria-hidden="true"></canvas>
+  <canvas id="web-canvas" aria-hidden="true"></canvas>
 
-    <!-- navigation -->
-    <nav class="nav">
-        <div class="nav__inner">
-            <a href="#top" class="brand">
-                <span class="brand__logo">
-                    <!-- replace src with your actual logo path -->
-                    <img src="IMG_20260624_225012_873_647641145267211194.webp" alt="LERMET AI logo" />
-                </span>
-                LERMET AI
-                <span class="brand__mark">· create · code · elevate</span>
-            </a>
-            <ul class="nav__links">
-                <li><a href="#features">Platform</a></li>
-                <li><a href="#features">AI Studio</a></li>
-                <li><a href="#pricing">Pricing</a></li>
-                <li><a href="#">Docs</a></li>
-            </ul>
-            <div class="nav__actions">
-                <a href="#" class="nav__signin">Sign in</a>
-                <a href="#pricing" class="btn btn--primary">Get started</a>
-            </div>
-            <button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
-                <svg width="18" height="14" viewBox="0 0 18 14" fill="none">
-                    <path d="M0 1H18M0 7H18M0 13H18" stroke="currentColor" stroke-width="1.6" />
-                </svg>
+  <!-- ============================================================
+       BACKGROUND SCENE — New York Night Skyline + Parallax
+  ============================================================ -->
+  <div class="scene" id="scene" role="img" aria-label="New York City night skyline">
+    <!-- Gradient sky -->
+    <div class="sky" aria-hidden="true"></div>
+
+    <!-- Animated gradient overlay -->
+    <div class="gradient-overlay" aria-hidden="true"></div>
+
+    <!-- SVG Skyline Layer (Far — slow parallax) -->
+    <div class="skyline skyline--far" aria-hidden="true" data-parallax="0.02">
+      <svg viewBox="0 0 1440 320" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg">
+        <!-- Far buildings — muted -->
+        <g fill="#0d1a2e" opacity="0.7">
+          <rect x="0" y="180" width="30" height="140"/>
+          <rect x="35" y="140" width="25" height="180"/>
+          <rect x="65" y="160" width="40" height="160"/>
+          <rect x="110" y="100" width="20" height="220"/>
+          <rect x="135" y="130" width="35" height="190"/>
+          <rect x="175" y="90" width="28" height="230"/>
+          <rect x="210" y="150" width="45" height="170"/>
+          <rect x="260" y="70" width="22" height="250"/>
+          <rect x="288" y="110" width="38" height="210"/>
+          <rect x="332" y="85" width="30" height="235"/>
+          <rect x="368" y="120" width="50" height="200"/>
+          <rect x="424" y="60" width="25" height="260"/>
+          <rect x="455" y="100" width="42" height="220"/>
+          <rect x="503" y="80" width="18" height="240"/>
+          <rect x="528" y="140" width="36" height="180"/>
+          <rect x="570" y="50" width="30" height="270"/>
+          <rect x="606" y="90" width="55" height="230"/>
+          <rect x="667" y="110" width="28" height="210"/>
+          <rect x="701" y="75" width="20" height="245"/>
+          <rect x="727" y="130" width="44" height="190"/>
+          <rect x="777" y="60" width="32" height="260"/>
+          <rect x="815" y="100" width="38" height="220"/>
+          <rect x="859" y="80" width="26" height="240"/>
+          <rect x="891" y="120" width="48" height="200"/>
+          <rect x="945" y="55" width="22" height="265"/>
+          <rect x="973" y="90" width="40" height="230"/>
+          <rect x="1019" y="70" width="30" height="250"/>
+          <rect x="1055" y="110" width="52" height="210"/>
+          <rect x="1113" y="85" width="24" height="235"/>
+          <rect x="1143" y="145" width="38" height="175"/>
+          <rect x="1187" y="65" width="28" height="255"/>
+          <rect x="1221" y="100" width="44" height="220"/>
+          <rect x="1271" y="80" width="30" height="240"/>
+          <rect x="1307" y="120" width="50" height="200"/>
+          <rect x="1363" y="55" width="26" height="265"/>
+          <rect x="1395" y="95" width="45" height="225"/>
+        </g>
+        <!-- Far building windows — dim blue -->
+        <g fill="#1a3a6b" opacity="0.4">
+          <rect x="115" y="115" width="5" height="5"/><rect x="125" y="115" width="5" height="5"/>
+          <rect x="115" y="130" width="5" height="5"/><rect x="125" y="130" width="5" height="5"/>
+          <rect x="265" y="85" width="4" height="4"/><rect x="273" y="85" width="4" height="4"/>
+          <rect x="265" y="98" width="4" height="4"/><rect x="273" y="98" width="4" height="4"/>
+          <rect x="575" y="65" width="5" height="5"/><rect x="585" y="65" width="5" height="5"/>
+          <rect x="575" y="80" width="5" height="5"/><rect x="585" y="80" width="5" height="5"/>
+          <rect x="780" y="75" width="5" height="5"/><rect x="790" y="75" width="5" height="5"/>
+          <rect x="780" y="90" width="5" height="5"/>
+          <rect x="1195" y="80" width="5" height="5"/><rect x="1205" y="80" width="5" height="5"/>
+          <rect x="1195" y="95" width="5" height="5"/>
+        </g>
+      </svg>
+    </div>
+
+    <!-- SVG Skyline Layer (Mid — medium parallax) -->
+    <div class="skyline skyline--mid" aria-hidden="true" data-parallax="0.05">
+      <svg viewBox="0 0 1440 400" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg">
+        <g fill="#0f1e35">
+          <!-- Empire State Building style spire -->
+          <rect x="680" y="20" width="4" height="40"/>
+          <rect x="675" y="60" width="14" height="20"/>
+          <rect x="665" y="80" width="34" height="30"/>
+          <rect x="650" y="110" width="64" height="180"/>
+          <!-- Chrysler-style building -->
+          <rect x="290" y="80" width="6" height="30"/>
+          <rect x="286" y="110" width="14" height="15"/>
+          <rect x="278" y="125" width="30" height="165"/>
+          <!-- Various buildings -->
+          <rect x="80" y="150" width="60" height="250"/>
+          <rect x="150" y="120" width="45" height="280"/>
+          <rect x="205" y="170" width="70" height="230"/>
+          <rect x="330" y="130" width="55" height="270"/>
+          <rect x="395" y="95" width="38" height="305"/>
+          <rect x="445" y="155" width="65" height="245"/>
+          <rect x="520" y="110" width="50" height="290"/>
+          <rect x="580" y="140" width="60" height="260"/>
+          <rect x="750" y="100" width="70" height="300"/>
+          <rect x="830" y="130" width="55" height="270"/>
+          <rect x="895" y="160" width="45" height="240"/>
+          <rect x="950" y="105" width="65" height="295"/>
+          <rect x="1025" y="140" width="55" height="260"/>
+          <rect x="1090" y="115" width="70" height="285"/>
+          <rect x="1170" y="90" width="48" height="310"/>
+          <rect x="1228" y="150" width="60" height="250"/>
+          <rect x="1298" y="125" width="50" height="275"/>
+          <rect x="1358" y="165" width="82" height="235"/>
+        </g>
+        <!-- Mid windows — blue glow -->
+        <g fill="#1e4a8a" opacity="0.6">
+          <!-- Empire windows -->
+          <rect x="658" y="125" width="6" height="6"/><rect x="668" y="125" width="6" height="6"/>
+          <rect x="658" y="140" width="6" height="6"/><rect x="668" y="140" width="6" height="6"/>
+          <rect x="658" y="155" width="6" height="6"/><rect x="668" y="155" width="6" height="6"/>
+          <rect x="658" y="170" width="6" height="6"/><rect x="668" y="170" width="6" height="6"/>
+          <!-- Lit windows cluster -->
+          <rect x="90" y="165" width="7" height="7"/><rect x="102" y="165" width="7" height="7"/>
+          <rect x="114" y="165" width="7" height="7"/>
+          <rect x="90" y="182" width="7" height="7"/><rect x="114" y="182" width="7" height="7"/>
+          <rect x="760" y="120" width="8" height="8"/><rect x="774" y="120" width="8" height="8"/>
+          <rect x="760" y="138" width="8" height="8"/>
+          <rect x="958" y="120" width="7" height="7"/><rect x="970" y="120" width="7" height="7"/>
+          <rect x="958" y="137" width="7" height="7"/><rect x="970" y="137" width="7" height="7"/>
+        </g>
+        <!-- Red glowing windows (hero accent) -->
+        <g fill="#e6162d" opacity="0.5">
+          <rect x="158" y="140" width="5" height="5"/>
+          <rect x="170" y="155" width="5" height="5"/>
+          <rect x="840" y="150" width="5" height="5"/>
+          <rect x="855" y="165" width="5" height="5"/>
+          <rect x="1100" y="135" width="5" height="5"/>
+        </g>
+      </svg>
+    </div>
+
+    <!-- SVG Skyline Layer (Near — fast parallax) -->
+    <div class="skyline skyline--near" aria-hidden="true" data-parallax="0.09">
+      <svg viewBox="0 0 1440 480" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg">
+        <g fill="#070e1a">
+          <rect x="0" y="280" width="110" height="200"/>
+          <rect x="115" y="240" width="85" height="240"/>
+          <rect x="205" y="260" width="100" height="220"/>
+          <rect x="310" y="200" width="75" height="280"/>
+          <rect x="390" y="230" width="90" height="250"/>
+          <!-- One World Trade silhouette -->
+          <rect x="488" y="300" width="2" height="30"/>
+          <polygon points="487,300 490,250 493,300"/>
+          <rect x="480" y="330" width="18" height="150"/>
+          <!-- Other near buildings -->
+          <rect x="505" y="260" width="95" height="220"/>
+          <rect x="608" y="290" width="70" height="190"/>
+          <rect x="685" y="245" width="105" height="235"/>
+          <rect x="797" y="270" width="80" height="210"/>
+          <rect x="884" y="230" width="95" height="250"/>
+          <rect x="987" y="260" width="75" height="220"/>
+          <rect x="1068" y="240" width="110" height="240"/>
+          <rect x="1185" y="270" width="85" height="210"/>
+          <rect x="1278" y="250" width="90" height="230"/>
+          <rect x="1375" y="285" width="65" height="195"/>
+        </g>
+        <!-- Near windows with strong glow -->
+        <g class="window-glow">
+          <!-- Blue clusters -->
+          <rect x="120" y="260" width="9" height="9" fill="#2563eb" opacity="0.8"/>
+          <rect x="135" y="260" width="9" height="9" fill="#2563eb" opacity="0.5"/>
+          <rect x="150" y="260" width="9" height="9" fill="#2563eb" opacity="0.7"/>
+          <rect x="120" y="280" width="9" height="9" fill="#2563eb" opacity="0.6"/>
+          <rect x="135" y="280" width="9" height="9" fill="#2563eb" opacity="0.9"/>
+          <rect x="320" y="220" width="10" height="10" fill="#3b82f6" opacity="0.7"/>
+          <rect x="336" y="220" width="10" height="10" fill="#3b82f6" opacity="0.5"/>
+          <rect x="320" y="240" width="10" height="10" fill="#3b82f6" opacity="0.8"/>
+          <rect x="700" y="265" width="11" height="11" fill="#1d4ed8" opacity="0.7"/>
+          <rect x="718" y="265" width="11" height="11" fill="#1d4ed8" opacity="0.9"/>
+          <rect x="700" y="285" width="11" height="11" fill="#1d4ed8" opacity="0.5"/>
+          <rect x="718" y="285" width="11" height="11" fill="#1d4ed8" opacity="0.7"/>
+          <rect x="1080" y="255" width="10" height="10" fill="#2563eb" opacity="0.8"/>
+          <rect x="1096" y="255" width="10" height="10" fill="#2563eb" opacity="0.6"/>
+          <rect x="1112" y="255" width="10" height="10" fill="#2563eb" opacity="0.9"/>
+          <rect x="1080" y="275" width="10" height="10" fill="#2563eb" opacity="0.5"/>
+          <!-- Red accent windows -->
+          <rect x="212" y="275" width="8" height="8" fill="#e6162d" opacity="0.7"/>
+          <rect x="226" y="290" width="8" height="8" fill="#e6162d" opacity="0.5"/>
+          <rect x="900" y="248" width="9" height="9" fill="#e6162d" opacity="0.6"/>
+          <rect x="916" y="265" width="9" height="9" fill="#e6162d" opacity="0.8"/>
+          <rect x="1290" y="265" width="9" height="9" fill="#e6162d" opacity="0.7"/>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Moon -->
+    <div class="moon" aria-hidden="true"></div>
+
+    <!-- Web anchor points (SVG web lines from Spider-Man) -->
+    <svg class="web-lines" id="web-lines-svg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+      <!-- Dynamically drawn by JS -->
+    </svg>
+  </div>
+
+  <!-- ============================================================
+       SPIDER-MAN SWING ANIMATION
+  ============================================================ -->
+  <div class="spiderman-wrapper" id="spiderman-wrapper" aria-hidden="true">
+    <svg class="spiderman-figure" id="spiderman-svg" viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg">
+      <!-- Body -->
+      <ellipse cx="30" cy="38" rx="14" ry="18" fill="#e6162d"/>
+      <!-- Chest web pattern lines -->
+      <line x1="30" y1="20" x2="30" y2="56" stroke="#8b0a1a" stroke-width="0.8" opacity="0.6"/>
+      <line x1="16" y1="30" x2="44" y2="30" stroke="#8b0a1a" stroke-width="0.8" opacity="0.6"/>
+      <line x1="18" y1="23" x2="42" y2="23" stroke="#8b0a1a" stroke-width="0.6" opacity="0.5"/>
+      <line x1="17" y1="38" x2="43" y2="38" stroke="#8b0a1a" stroke-width="0.6" opacity="0.5"/>
+      <line x1="18" y1="48" x2="42" y2="48" stroke="#8b0a1a" stroke-width="0.6" opacity="0.5"/>
+      <!-- Legs -->
+      <ellipse cx="22" cy="58" rx="7" ry="12" fill="#1a3a6b" transform="rotate(-15 22 58)"/>
+      <ellipse cx="38" cy="58" rx="7" ry="12" fill="#1a3a6b" transform="rotate(15 38 58)"/>
+      <!-- Boots -->
+      <ellipse cx="19" cy="70" rx="7" ry="5" fill="#e6162d" transform="rotate(-15 19 70)"/>
+      <ellipse cx="41" cy="70" rx="7" ry="5" fill="#e6162d" transform="rotate(15 41 70)"/>
+      <!-- Arms -->
+      <ellipse cx="12" cy="36" rx="6" ry="11" fill="#1a3a6b" transform="rotate(-30 12 36)"/>
+      <ellipse cx="48" cy="32" rx="6" ry="11" fill="#1a3a6b" transform="rotate(30 48 32)"/>
+      <!-- Gloves -->
+      <ellipse cx="7" cy="28" rx="6" ry="5" fill="#e6162d" transform="rotate(-30 7 28)"/>
+      <ellipse cx="53" cy="24" rx="6" ry="5" fill="#e6162d" transform="rotate(30 53 24)"/>
+      <!-- Head -->
+      <ellipse cx="30" cy="16" rx="13" ry="14" fill="#e6162d"/>
+      <!-- Eye lenses (white) -->
+      <ellipse cx="23" cy="13" rx="6" ry="5" fill="white" transform="rotate(-10 23 13)"/>
+      <ellipse cx="37" cy="13" rx="6" ry="5" fill="white" transform="rotate(10 37 13)"/>
+      <!-- Eye inner (blue) -->
+      <ellipse cx="23" cy="13" rx="4" ry="3.5" fill="#a8c8f0" transform="rotate(-10 23 13)"/>
+      <ellipse cx="37" cy="13" rx="4" ry="3.5" fill="#a8c8f0" transform="rotate(10 37 13)"/>
+      <!-- Head web lines -->
+      <line x1="30" y1="2" x2="30" y2="30" stroke="#8b0a1a" stroke-width="0.7" opacity="0.5"/>
+      <line x1="17" y1="8" x2="43" y2="8" stroke="#8b0a1a" stroke-width="0.6" opacity="0.4"/>
+      <line x1="17" y1="17" x2="43" y2="17" stroke="#8b0a1a" stroke-width="0.6" opacity="0.4"/>
+    </svg>
+  </div>
+
+  <!-- ============================================================
+       MAIN CONTENT
+  ============================================================ -->
+  <main class="main" id="main">
+
+    <!-- Neon glow orbs -->
+    <div class="orb orb--red" aria-hidden="true"></div>
+    <div class="orb orb--blue" aria-hidden="true"></div>
+
+    <!-- ============================================================
+         LOGIN CARD — Glassmorphism
+    ============================================================ -->
+    <article class="card" id="login-card" role="main">
+
+      <!-- Card inner glow border -->
+      <div class="card__border" aria-hidden="true"></div>
+
+      <!-- Web corner decorations -->
+      <svg class="card__web-corner card__web-corner--tl" aria-hidden="true" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,0 Q40,0 80,0 Q40,40 0,80 Q0,40 0,0Z" fill="none" stroke="rgba(230,22,45,0.3)" stroke-width="0.5"/>
+        <line x1="0" y1="0" x2="80" y2="80" stroke="rgba(230,22,45,0.2)" stroke-width="0.5"/>
+        <line x1="0" y1="0" x2="0" y2="80" stroke="rgba(230,22,45,0.15)" stroke-width="0.5"/>
+        <line x1="0" y1="0" x2="80" y2="0" stroke="rgba(230,22,45,0.15)" stroke-width="0.5"/>
+        <line x1="0" y1="20" x2="60" y2="0" stroke="rgba(230,22,45,0.1)" stroke-width="0.5"/>
+        <line x1="20" y1="0" x2="0" y2="60" stroke="rgba(230,22,45,0.1)" stroke-width="0.5"/>
+        <circle cx="0" cy="0" r="3" fill="rgba(230,22,45,0.5)"/>
+      </svg>
+      <svg class="card__web-corner card__web-corner--tr" aria-hidden="true" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+        <path d="M80,0 Q40,0 0,0 Q40,40 80,80 Q80,40 80,0Z" fill="none" stroke="rgba(26,58,107,0.4)" stroke-width="0.5"/>
+        <line x1="80" y1="0" x2="0" y2="80" stroke="rgba(26,58,107,0.25)" stroke-width="0.5"/>
+        <line x1="80" y1="0" x2="80" y2="80" stroke="rgba(26,58,107,0.2)" stroke-width="0.5"/>
+        <line x1="80" y1="0" x2="0" y2="0" stroke="rgba(26,58,107,0.2)" stroke-width="0.5"/>
+        <circle cx="80" cy="0" r="3" fill="rgba(26,58,107,0.6)"/>
+      </svg>
+
+      <!-- Logo -->
+      <header class="card__header">
+        <div class="logo" aria-label="Spider-Man Web Portal">
+          <svg class="logo__icon" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <!-- Spider web -->
+            <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(230,22,45,0.3)" stroke-width="0.8"/>
+            <circle cx="24" cy="24" r="13" fill="none" stroke="rgba(230,22,45,0.25)" stroke-width="0.8"/>
+            <circle cx="24" cy="24" r="6" fill="none" stroke="rgba(230,22,45,0.4)" stroke-width="0.8"/>
+            <line x1="24" y1="4" x2="24" y2="44" stroke="rgba(230,22,45,0.25)" stroke-width="0.8"/>
+            <line x1="4" y1="24" x2="44" y2="24" stroke="rgba(230,22,45,0.25)" stroke-width="0.8"/>
+            <line x1="9.4" y1="9.4" x2="38.6" y2="38.6" stroke="rgba(230,22,45,0.2)" stroke-width="0.8"/>
+            <line x1="38.6" y1="9.4" x2="9.4" y2="38.6" stroke="rgba(230,22,45,0.2)" stroke-width="0.8"/>
+            <!-- Spider body -->
+            <ellipse cx="24" cy="24" rx="5" ry="6" fill="#e6162d"/>
+            <ellipse cx="24" cy="19" rx="4" ry="4" fill="#e6162d"/>
+            <!-- Spider legs -->
+            <line x1="24" y1="22" x2="12" y2="16" stroke="#e6162d" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="24" y1="22" x2="10" y2="22" stroke="#e6162d" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="24" y1="24" x2="12" y2="30" stroke="#e6162d" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="24" y1="22" x2="36" y2="16" stroke="#e6162d" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="24" y1="22" x2="38" y2="22" stroke="#e6162d" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="24" y1="24" x2="36" y2="30" stroke="#e6162d" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <div class="logo__text">
+            <span class="logo__title">WEB-SLINGER</span>
+            <span class="logo__sub">MARVEL AUTH PORTAL</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Card heading -->
+      <div class="card__intro">
+        <h1 class="card__heading">
+          <span class="card__heading-line1">With Great Power</span>
+          <span class="card__heading-line2">Comes Great Access.</span>
+        </h1>
+        <p class="card__tagline">Sign in to your Marvel account to continue</p>
+      </div>
+
+      <!-- ======================================================
+           SOCIAL LOGIN BUTTONS
+      ====================================================== -->
+      <div class="social-login" role="group" aria-label="Sign in with social account">
+        <button class="btn-social btn-social--google" type="button" id="btn-google" aria-label="Continue with Google">
+          <svg class="btn-social__icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+          </svg>
+          <span>Continue with Google</span>
+        </button>
+
+        <button class="btn-social btn-social--github" type="button" id="btn-github" aria-label="Continue with GitHub">
+          <svg class="btn-social__icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" fill="currentColor"/>
+          </svg>
+          <span>Continue with GitHub</span>
+        </button>
+      </div>
+
+      <!-- Divider -->
+      <div class="divider" role="separator" aria-label="or sign in with email">
+        <span class="divider__line" aria-hidden="true"></span>
+        <span class="divider__text">or sign in with email</span>
+        <span class="divider__line" aria-hidden="true"></span>
+      </div>
+
+      <!-- ======================================================
+           LOGIN FORM
+      ====================================================== -->
+      <form class="form" id="login-form" novalidate aria-label="Email login form">
+
+        <!-- Email Field -->
+        <div class="field" id="field-email">
+          <label class="field__label" for="email">
+            Email Address
+          </label>
+          <div class="field__wrap">
+            <span class="field__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <input
+              class="field__input"
+              type="email"
+              id="email"
+              name="email"
+              placeholder="hero@marvel.com"
+              autocomplete="email"
+              spellcheck="false"
+              required
+              aria-describedby="email-error"
+              aria-required="true"
+            />
+            <span class="field__focus-ring" aria-hidden="true"></span>
+          </div>
+          <span class="field__error" id="email-error" role="alert" aria-live="polite"></span>
+        </div>
+
+        <!-- Password Field -->
+        <div class="field" id="field-password">
+          <label class="field__label" for="password">
+            Password
+          </label>
+          <div class="field__wrap">
+            <span class="field__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <input
+              class="field__input"
+              type="password"
+              id="password"
+              name="password"
+              placeholder="••••••••••••"
+              autocomplete="current-password"
+              required
+              aria-describedby="password-error"
+              aria-required="true"
+            />
+            <!-- Show/Hide Toggle -->
+            <button
+              class="field__toggle"
+              type="button"
+              id="password-toggle"
+              aria-label="Show password"
+              aria-pressed="false"
+              aria-controls="password"
+            >
+              <!-- Eye open -->
+              <svg class="eye-open" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="1.5"/>
+                <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/>
+              </svg>
+              <!-- Eye closed -->
+              <svg class="eye-closed" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:none">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="1" y1="1" x2="23" y2="23" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
             </button>
+            <span class="field__focus-ring" aria-hidden="true"></span>
+          </div>
+          <span class="field__error" id="password-error" role="alert" aria-live="polite"></span>
         </div>
-        <div class="nav__mobile" id="navMobile">
-            <a href="#features">Platform</a>
-            <a href="#features">AI Studio</a>
-            <a href="#pricing">Pricing</a>
-            <a href="#">Docs</a>
-            <a href="#" class="nav__signin">Sign in</a>
-            <a href="#pricing" class="btn btn--primary btn--block">Get started</a>
+
+        <!-- Form Options Row -->
+        <div class="form__options">
+          <!-- Remember Me -->
+          <label class="checkbox" for="remember">
+            <input
+              class="checkbox__input"
+              type="checkbox"
+              id="remember"
+              name="remember"
+              aria-label="Remember me on this device"
+            />
+            <span class="checkbox__custom" aria-hidden="true">
+              <svg class="checkbox__check" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M1 4L4.5 7.5L11 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span class="checkbox__label">Remember me</span>
+          </label>
+
+          <!-- Forgot Password -->
+          <a href="#" class="forgot-link" id="forgot-link" aria-label="Reset your forgotten password">
+            Forgot password?
+          </a>
         </div>
-    </nav>
 
-    <main id="top">
+        <!-- Submit Button -->
+        <button class="btn-submit" type="submit" id="btn-submit" aria-label="Sign in to your account">
+          <span class="btn-submit__text">Sign In</span>
+          <span class="btn-submit__loader" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+              <path d="M12 2a10 10 0 0 1 10 10" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="btn-submit__arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5 12h14M12 5l7 7-7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <!-- Web-shoot particle burst on click -->
+          <span class="btn-submit__burst" aria-hidden="true"></span>
+        </button>
 
-        <!-- hero -->
-        <section class="hero">
-            <div class="wrap hero__inner">
-                <div>
-                    <div class="hero__tagline">
-                        LERMET AI
-                        <span>·</span>
-                        <span>create · code · elevate</span>
-                    </div>
-                    <h1 class="hero__title">
-                        Build, learn,<br /><em>elevate with AI.</em>
-                    </h1>
-                    <p class="hero__sub">
-                        LERMET AI is your creative and coding companion — from prototyping ideas to
-                        mastering new skills, all in one intelligent workspace.
-                    </p>
-                    <div class="hero__ctas">
-                        <a href="#pricing" class="btn btn--primary">Start building free</a>
-                        <a href="#features" class="btn btn--ghost">Explore the studio →</a>
-                    </div>
-                    <div class="hero__meta">
-                        <span class="mono">AI-powered</span>
-                        <span class="mono">Code · Create · Learn</span>
-                        <span class="mono">No card required</span>
-                    </div>
-                </div>
-                <div class="hero__visual">
-                    <canvas id="constellation"></canvas>
-                </div>
-            </div>
-        </section>
+        <!-- Sign up link -->
+        <p class="form__signup">
+          New hero?
+          <a href="#" class="form__signup-link" aria-label="Create a new account">
+            Create your account →
+          </a>
+        </p>
 
-        <!-- features -->
-        <section class="section features" id="features">
-            <div class="wrap">
-                <div class="section__head">
-                    <span class="eyebrow">The ecosystem</span>
-                    <h2 class="section__title">Three pillars. One connected mind.</h2>
-                    <p class="section__sub">
-                        LERMET AI weaves creation, coding, and learning into a single intelligent
-                        fabric — so your ideas flow without friction.
-                    </p>
-                </div>
+      </form>
 
-                <div class="feature-grid">
-                    <div class="feature-card">
-                        <div class="feature-card__node mono">01</div>
-                        <div class="feature-card__title">AI Creation Studio</div>
-                        <p class="feature-card__text">
-                            Generate, refine, and remix creative work — from writing to design —
-                            with real-time AI assistance.
-                        </p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-card__node mono">02</div>
-                        <div class="feature-card__title">Code Intelligence</div>
-                        <p class="feature-card__text">
-                            Write, debug, and understand code faster. AI that speaks your
-                            language and your stack.
-                        </p>
-                    </div>
-                    <div class="feature-card feature-card--center">
-                        <div class="feature-card__node mono">AI</div>
-                        <div class="feature-card__title">Adaptive Learning</div>
-                        <p class="feature-card__text">
-                            Learn anything — from Python to poetry. LERMET adapts to your
-                            pace, style, and goals.
-                        </p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-card__node mono">03</div>
-                        <div class="feature-card__title">Collaborative Flow</div>
-                        <p class="feature-card__text">
-                            Share workspaces, sync progress, and build together — whether
-                            you're a team of two or twenty.
-                        </p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-card__node mono">04</div>
-                        <div class="feature-card__title">Insight Dashboard</div>
-                        <p class="feature-card__text">
-                            See your creative and coding growth over time. What you've made,
-                            what you've learned, what's next.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
+    </article>
+    <!-- /card -->
 
-        <!-- how it works -->
-        <section class="section section--alt">
-            <div class="wrap">
-                <div class="section__head">
-                    <span class="eyebrow">The flow</span>
-                    <h2 class="section__title">From idea to impact, in four moves.</h2>
-                </div>
-                <div class="steps">
-                    <div class="step">
-                        <span class="step__index">01</span>
-                        <h3 class="step__title">Ideate</h3>
-                        <p class="step__text">
-                            Start with a prompt, a sketch, or a question. LERMET listens,
-                            interprets, and meets you there.
-                        </p>
-                    </div>
-                    <div class="step">
-                        <span class="step__index">02</span>
-                        <h3 class="step__title">Create</h3>
-                        <p class="step__text">
-                            Generate code, content, or concepts. Refine with AI that
-                            understands context and intent.
-                        </p>
-                    </div>
-                    <div class="step">
-                        <span class="step__index">03</span>
-                        <h3 class="step__title">Learn</h3>
-                        <p class="step__text">
-                            Every creation becomes a lesson. LERMET surfaces insights,
-                            alternatives, and deeper knowledge.
-                        </p>
-                    </div>
-                    <div class="step">
-                        <span class="step__index">04</span>
-                        <h3 class="step__title">Elevate</h3>
-                        <p class="step__text">
-                            Share, deploy, or revisit. Your work and learning persist,
-                            evolve, and compound over time.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
+  </main>
 
-        <!-- stats -->
-        <section class="section">
-            <div class="wrap">
-                <div class="stats-panel">
-                    <div class="stat">
-                        <div class="stat__value"><span class="stat-num" data-target="12.8" data-decimals="1">0</span>k+</div>
-                        <div class="stat__label">Active creators &amp; coders</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat__value"><span class="stat-num" data-target="89" data-decimals="0">0</span>%</div>
-                        <div class="stat__label">Report faster project delivery</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat__value"><span class="stat-num" data-target="6" data-decimals="0">0</span>+</div>
-                        <div class="stat__label">Languages &amp; creative domains</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat__value">24 / 7</div>
-                        <div class="stat__label">AI assistant always on</div>
-                    </div>
-                </div>
-            </div>
-        </section>
+  <!-- ============================================================
+       SUCCESS OVERLAY
+  ============================================================ -->
+  <div class="success-overlay" id="success-overlay" role="dialog" aria-modal="true" aria-label="Login successful" aria-hidden="true">
+    <div class="success-overlay__inner">
+      <svg class="success-overlay__web" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="100" cy="100" r="90" fill="none" stroke="rgba(230,22,45,0.3)" stroke-width="1"/>
+        <circle cx="100" cy="100" r="60" fill="none" stroke="rgba(230,22,45,0.2)" stroke-width="1"/>
+        <circle cx="100" cy="100" r="30" fill="none" stroke="rgba(230,22,45,0.3)" stroke-width="1"/>
+        <line x1="100" y1="10" x2="100" y2="190" stroke="rgba(230,22,45,0.2)" stroke-width="1"/>
+        <line x1="10" y1="100" x2="190" y2="100" stroke="rgba(230,22,45,0.2)" stroke-width="1"/>
+        <line x1="36" y1="36" x2="164" y2="164" stroke="rgba(230,22,45,0.15)" stroke-width="1"/>
+        <line x1="164" y1="36" x2="36" y2="164" stroke="rgba(230,22,45,0.15)" stroke-width="1"/>
+      </svg>
+      <div class="success-overlay__icon" aria-hidden="true">✓</div>
+      <h2 class="success-overlay__title">Welcome, Hero.</h2>
+      <p class="success-overlay__msg">Your identity is confirmed. Entering the portal…</p>
+    </div>
+  </div>
 
-        <!-- testimonials -->
-        <section class="section section--alt">
-            <div class="wrap">
-                <div class="section__head">
-                    <span class="eyebrow">From the community</span>
-                    <h2 class="section__title">Built for builders, by builders.</h2>
-                </div>
-                <div class="testimonial-grid">
-                    <div class="testimonial-card">
-                        <p class="testimonial-card__quote">
-                            "LERMET turned my rough prototype into a working app in two days.
-                            The AI understood what I meant, not just what I typed."
-                        </p>
-                        <div class="testimonial-card__who">ALEX, 29 — INDIE MAKER</div>
-                    </div>
-                    <div class="testimonial-card">
-                        <p class="testimonial-card__quote">
-                            "I used it to learn React while building my portfolio. Every
-                            mistake became a lesson, every lesson became a feature."
-                        </p>
-                        <div class="testimonial-card__who">JORDAN, 22 — BOOTCAMP GRAD</div>
-                    </div>
-                    <div class="testimonial-card">
-                        <p class="testimonial-card__quote">
-                            "We moved our entire content workflow into LERMET. It's like having
-                            a creative director and a dev lead in one interface."
-                        </p>
-                        <div class="testimonial-card__who">SAMIRA, 41 — STUDIO LEAD</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- pricing -->
-        <section class="section" id="pricing">
-            <div class="wrap">
-                <div class="section__head">
-                    <span class="eyebrow">Pricing</span>
-                    <h2 class="section__title">Start free. Scale when you need it.</h2>
-                </div>
-                <div class="price-grid">
-                    <div class="price-card">
-                        <span class="price-card__tier mono">FOUNDER</span>
-                        <div class="price-card__amount">$0<span>/month</span></div>
-                        <ul class="price-card__list">
-                            <li>Unlimited AI prompts</li>
-                            <li>50 code generations / month</li>
-                            <li>Single workspace</li>
-                            <li>Basic insights</li>
-                        </ul>
-                        <a href="#" class="btn btn--ghost btn--block">Start building</a>
-                    </div>
-                    <div class="price-card price-card--featured">
-                        <span class="price-card__tier mono">PRO</span>
-                        <div class="price-card__amount">$12<span>/month</span></div>
-                        <ul class="price-card__list">
-                            <li>Everything in Founder, unlimited</li>
-                            <li>Unlimited code &amp; creative generations</li>
-                            <li>Multi-workspace collaboration</li>
-                            <li>Advanced insights &amp; version history</li>
-                        </ul>
-                        <a href="#" class="btn btn--primary btn--block">Start free trial</a>
-                    </div>
-                    <div class="price-card">
-                        <span class="price-card__tier mono">TEAM</span>
-                        <div class="price-card__amount">$29<span>/month</span></div>
-                        <ul class="price-card__list">
-                            <li>Everything in Pro</li>
-                            <li>Up to 10 seats</li>
-                            <li>Shared workspace &amp; templates</li>
-                            <li>Priority AI response</li>
-                        </ul>
-                        <a href="#" class="btn btn--ghost btn--block">Contact sales</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- footer cta -->
-        <section class="section">
-            <div class="wrap">
-                <div class="footer-cta">
-                    <span class="eyebrow">Ready to create</span>
-                    <h2 class="footer-cta__title">Start your first project today.</h2>
-                    <p class="footer-cta__sub">
-                        No card needed. Bring an idea, and let LERMET AI help you build,
-                        code, and elevate it.
-                    </p>
-                    <a href="#" class="btn btn--primary">Start free — no card</a>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <footer>
-        <div class="wrap footer__row">
-            <span class="footer__copy">© 2026 LERMET AI — create · code · elevate.</span>
-            <div class="footer__links">
-                <a href="#features">Product</a>
-                <a href="#pricing">Pricing</a>
-                <a href="#">Company</a>
-                <a href="#">Legal</a>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // ----- mobile nav -----
-        const navToggle = document.getElementById('navToggle');
-        const navMobile = document.getElementById('navMobile');
-        navToggle.addEventListener('click', () => {
-            const open = navMobile.classList.toggle('is-open');
-            navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-        });
-        navMobile.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
-            navMobile.classList.remove('is-open');
-            navToggle.setAttribute('aria-expanded', 'false');
-        }));
-
-        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-        // ----- starfield background -----
-        (function starfield() {
-            const canvas = document.getElementById('starfield');
-            const ctx = canvas.getContext('2d');
-            let stars = [];
-
-            function resize() {
-                canvas.width = window.innerWidth;
-                canvas.height = document.body.scrollHeight;
-                const count = Math.floor((canvas.width * canvas.height) / 9000);
-                stars = Array.from({ length: count }, () => ({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    r: Math.random() * 1.1 + 0.2,
-                    a: Math.random() * 0.6 + 0.1,
-                    tw: Math.random() * 0.015 + 0.003,
-                    dir: Math.random() > 0.5 ? 1 : -1
-                }));
-            }
-
-            function draw() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = '#edf2f9';
-                stars.forEach(s => {
-                    if (!reduceMotion) {
-                        s.a += s.tw * s.dir;
-                        if (s.a > 0.7 || s.a < 0.1) s.dir *= -1;
-                    }
-                    ctx.globalAlpha = s.a;
-                    ctx.beginPath();
-                    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-                    ctx.fill();
-                });
-                ctx.globalAlpha = 1;
-                if (!reduceMotion) requestAnimationFrame(draw);
-            }
-
-            window.addEventListener('resize', resize);
-            resize();
-            draw();
-        })();
-
-        // ----- hero constellation -----
-        (function constellation() {
-            const canvas = document.getElementById('constellation');
-            const ctx = canvas.getContext('2d');
-            const container = canvas.parentElement;
-            let w, h, nodes;
-            const labels = ['Create', 'Code', 'Learn', 'Build', 'Design', 'Deploy', 'Iterate', 'Elevate'];
-            const colors = ['#5eead4', '#a78bfa', '#fbbf24', '#fb7185', '#5eead4', '#a78bfa', '#fbbf24', '#fb7185'];
-
-            function size() {
-                w = canvas.width = container.clientWidth;
-                h = canvas.height = container.clientHeight;
-                const cx = w / 2,
-                    cy = h / 2;
-                nodes = [{ x: cx, y: cy, vx: 0, vy: 0, r: 7, label: 'LERMET', center: true, color: '#edf2f9' }];
-                labels.forEach((label, i) => {
-                    const angle = (i / labels.length) * Math.PI * 2 + 0.3;
-                    const dist = Math.min(w, h) * (0.30 + (i % 3) * 0.05);
-                    nodes.push({
-                        x: cx + Math.cos(angle) * dist,
-                        y: cy + Math.sin(angle) * dist,
-                        vx: (Math.random() - 0.5) * 0.12,
-                        vy: (Math.random() - 0.5) * 0.12,
-                        r: 3.4,
-                        label,
-                        color: colors[i % colors.length]
-                    });
-                });
-            }
-
-            function step() {
-                ctx.clearRect(0, 0, w, h);
-
-                // connections from center
-                nodes.forEach((n, i) => {
-                    if (i === 0) return;
-                    const center = nodes[0];
-                    ctx.beginPath();
-                    ctx.moveTo(center.x, center.y);
-                    ctx.lineTo(n.x, n.y);
-                    ctx.strokeStyle = 'rgba(136,150,184,0.25)';
-                    ctx.lineWidth = 1;
-                    ctx.stroke();
-                });
-
-                // cross-links
-                for (let i = 1; i < nodes.length; i++) {
-                    const a = nodes[i],
-                        b = nodes[(i % (nodes.length - 1)) + 1];
-                    ctx.beginPath();
-                    ctx.moveTo(a.x, a.y);
-                    ctx.lineTo(b.x, b.y);
-                    ctx.strokeStyle = 'rgba(136,150,184,0.08)';
-                    ctx.stroke();
-                }
-
-                nodes.forEach((n, i) => {
-                    if (!reduceMotion && i > 0) {
-                        n.x += n.vx;
-                        n.y += n.vy;
-                        if (n.x < w * 0.08 || n.x > w * 0.92) n.vx *= -1;
-                        if (n.y < h * 0.08 || n.y > h * 0.92) n.vy *= -1;
-                    }
-                    ctx.beginPath();
-                    ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-                    ctx.fillStyle = n.color;
-                    ctx.shadowColor = n.color;
-                    ctx.shadowBlur = n.center ? 18 : 10;
-                    ctx.fill();
-                    ctx.shadowBlur = 0;
-
-                    ctx.font = n.center ? '600 14px Space Grotesk, sans-serif' : '10px IBM Plex Mono, monospace';
-                    ctx.fillStyle = n.center ? '#edf2f9' : 'rgba(237,242,249,0.7)';
-                    ctx.textAlign = 'center';
-                    ctx.fillText(n.label, n.x, n.y - n.r - 8);
-                });
-
-                if (!reduceMotion) requestAnimationFrame(step);
-            }
-
-            window.addEventListener('resize', size);
-            size();
-            step();
-        })();
-
-        // ----- count-up stats -----
-        (function countUp() {
-            const els = document.querySelectorAll('.stat-num');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (!entry.isIntersecting) return;
-                    const el = entry.target;
-                    const target = parseFloat(el.dataset.target);
-                    const decimals = parseInt(el.dataset.decimals || '0', 10);
-                    if (reduceMotion) {
-                        el.textContent = target.toFixed(decimals);
-                        observer.unobserve(el);
-                        return;
-                    }
-                    const duration = 1100;
-                    const start = performance.now();
-
-                    function frame(now) {
-                        const t = Math.min(1, (now - start) / duration);
-                        const eased = 1 - Math.pow(1 - t, 3);
-                        el.textContent = (target * eased).toFixed(decimals);
-                        if (t < 1) requestAnimationFrame(frame);
-                    }
-                    requestAnimationFrame(frame);
-                    observer.unobserve(el);
-                });
-            }, { threshold: 0.4 });
-            els.forEach(el => observer.observe(el));
-        })();
-    </script>
-
+  <!-- ============================================================
+       JAVASCRIPT
+  ============================================================ -->
+  <script src="js/particles.js"></script>
+  <script src="js/spiderman.js"></script>
+  <script src="js/login.js"></script>
 </body>
-  </html>
+</html>
